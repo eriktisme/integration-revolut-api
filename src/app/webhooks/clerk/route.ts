@@ -3,9 +3,24 @@ import { headers } from 'next/headers'
 import { Webhook } from 'svix'
 import { OrganizationJSON, WebhookEvent } from '@clerk/backend'
 import { env } from '@/env'
+import { MerchantAPI } from '@/lib/merchant-api'
+import { clerkClient } from '@clerk/nextjs/server'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const handleOrganizationCreated = (_: OrganizationJSON) => {
+const handleOrganizationCreated = async (data: OrganizationJSON) => {
+  const merchantApi = new MerchantAPI({
+    apiKey: env.REVOLUT_MERCHANT_API_KEY,
+    version: '1.0',
+    environment: 'sandbox',
+  })
+
+  const user = await (await clerkClient()).users.getUser(data.created_by)
+
+  await merchantApi.createCustomer({
+    email: user.emailAddresses.at(0)?.emailAddress as string,
+    fullName: user.fullName as string,
+    businessName: data.name,
+  })
+
   return new Response('Organization created', { status: 201 })
 }
 
@@ -52,7 +67,7 @@ export const POST = async (request: Request): Promise<Response> => {
 
   switch (eventType) {
     case 'organization.created': {
-      response = handleOrganizationCreated(event.data)
+      response = await handleOrganizationCreated(event.data)
       break
     }
     default: {

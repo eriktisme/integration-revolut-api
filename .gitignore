@@ -45,3 +45,6 @@ next-env.d.ts
 /blob-report/
 /playwright/.cache/
 /tests-examples/
+
+# pgtyped
+config.json

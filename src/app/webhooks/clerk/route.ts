@@ -5,8 +5,15 @@ import { OrganizationJSON, WebhookEvent } from '@clerk/backend'
 import { env } from '@/env'
 import { MerchantAPI } from '@/lib/merchant-api'
 import { clerkClient } from '@clerk/nextjs/server'
+import { insertWorkspace } from '@/data/queries/workspaces.queries'
+import { createPool } from '@vercel/postgres'
 
 const handleOrganizationCreated = async (data: OrganizationJSON) => {
+  const pool = createPool({
+    connectionString: env.DATABASE_URL,
+    maxUses: 1,
+  })
+
   const merchantApi = new MerchantAPI({
     apiKey: env.REVOLUT_MERCHANT_API_KEY,
     version: '1.0',
@@ -15,11 +22,21 @@ const handleOrganizationCreated = async (data: OrganizationJSON) => {
 
   const user = await (await clerkClient()).users.getUser(data.created_by)
 
-  await merchantApi.createCustomer({
+  const customer = await merchantApi.createCustomer({
     email: user.emailAddresses.at(0)?.emailAddress as string,
     fullName: user.fullName as string,
     businessName: data.name,
   })
+
+  await insertWorkspace.run(
+    {
+      workspace: {
+        id: data.id,
+        revolutCustomerId: customer.id,
+      },
+    },
+    pool
+  )
 
   return new Response('Organization created', { status: 201 })
 }

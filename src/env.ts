@@ -29,6 +29,8 @@ export const env = createEnv({
   runtimeEnv: {
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     CLERK_WEBHOOK_SECRET: process.env.CLERK_WEBHOOK_SECRET,
+    DATABASE_URL: process.env.DATABASE_URL,
+    DATABASE_URL_UNPOOLED: process.env.DATABASE_URL_UNPOOLED,
     NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL:
       process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
     NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:
@@ -55,7 +57,12 @@ export const env = createEnv({
     CLERK_SECRET_KEY: z.string().min(1).startsWith('sk_'),
     CLERK_WEBHOOK_SECRET: z.string().min(1).startsWith('whsec_'),
 
+    // Revolut
     REVOLUT_MERCHANT_API_KEY: z.string().min(1).startsWith('sk_'),
+
+    // Neon
+    DATABASE_URL: z.string().min(1),
+    DATABASE_URL_UNPOOLED: z.string().min(1),
 
     // Added by Vercel
     VERCEL: z.string().optional(),

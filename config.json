@@ -1,0 +1,19 @@
+{
+  "transforms": [
+    {
+      "mode": "sql",
+      "include": "data/queries/*.sql",
+      "emitTemplate": "{{dir}}/{{name}}.queries.ts"
+    }
+  ],
+  "srcDir": "./src/",
+  "failOnError": false,
+  "camelCaseColumnNames": false,
+  "db": {
+    "host": "ep-bitter-flower-a5lad5p3.us-east-2.aws.neon.tech",
+    "user": "neondb_owner",
+    "dbName": "neondb",
+    "password": "90MxXICwTJta",
+    "ssl": true
+  }
+}

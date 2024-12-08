@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { auth, currentUser } from '@clerk/nextjs/server'
 
 export default async function Layout({

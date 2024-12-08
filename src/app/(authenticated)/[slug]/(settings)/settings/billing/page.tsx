@@ -1,9 +1,10 @@
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
+import { BillingSettingsPageTemplate, plans } from '@/features/billing-settings'
 
 export const metadata: Metadata = {
   title: 'Billing',
 }
 
 export default async function Page() {
-  return null
+  return <BillingSettingsPageTemplate plans={plans} />
 }

@@ -21,7 +21,7 @@ export const SettingsSidebar = () => {
 
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader className="pt-4">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>

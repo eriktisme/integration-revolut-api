@@ -1,7 +1,13 @@
 import 'server-only'
 
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { auth, currentUser } from '@clerk/nextjs/server'
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query'
+import { Providers } from './providers'
 
 export default async function Layout({
   children,
@@ -15,5 +21,12 @@ export default async function Layout({
     redirectToSignIn()
   }
 
-  return <>{children}</>
+  const queryClient = new QueryClient()
+  const dehydratedState = dehydrate(queryClient)
+
+  return (
+    <Providers>
+      <HydrationBoundary state={dehydratedState}>{children}</HydrationBoundary>
+    </Providers>
+  )
 }

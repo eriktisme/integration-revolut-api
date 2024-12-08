@@ -1,7 +1,7 @@
 import { log } from '@/lib/observability'
 import { headers } from 'next/headers'
 import { Webhook } from 'svix'
-import { OrganizationJSON, WebhookEvent } from '@clerk/backend'
+import type { OrganizationJSON, WebhookEvent } from '@clerk/backend'
 import { env } from '@/env'
 import { MerchantAPI } from '@/lib/merchant-api'
 import { clerkClient } from '@clerk/nextjs/server'

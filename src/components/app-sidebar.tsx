@@ -34,6 +34,8 @@ export const AppSidebar = () => {
               )}
             >
               <OrganizationSwitcher
+                organizationProfileUrl={`/${orgSlug}/settings`}
+                organizationProfileMode="navigation"
                 afterCreateOrganizationUrl={(organization) =>
                   `/${organization.slug}`
                 }

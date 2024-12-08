@@ -9,6 +9,12 @@ import { insertWorkspace } from '@/data/queries/workspaces.queries'
 import { createPool } from '@vercel/postgres'
 
 const handleOrganizationCreated = async (data: OrganizationJSON) => {
+  if (!data.created_by) {
+    return new Response('Error occurred', { status: 400 })
+  }
+
+  const user = await (await clerkClient()).users.getUser(data.created_by)
+
   const pool = createPool({
     connectionString: env.DATABASE_URL,
     maxUses: 1,
@@ -19,8 +25,6 @@ const handleOrganizationCreated = async (data: OrganizationJSON) => {
     version: '1.0',
     environment: 'sandbox',
   })
-
-  const user = await (await clerkClient()).users.getUser(data.created_by)
 
   const customer = await merchantApi.createCustomer({
     email: user.emailAddresses.at(0)?.emailAddress as string,

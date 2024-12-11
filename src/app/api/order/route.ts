@@ -4,6 +4,8 @@ import { MerchantAPI } from '@/lib/merchant-api'
 import { env } from '@/env'
 import type { CreateOrderFormValues } from '@/features/billing-settings'
 import { log } from '@/lib/observability'
+import { insertOrder } from '@/data/queries/orders.queries'
+import { createPool } from '@vercel/postgres'
 
 export async function POST(request: Request) {
   const { orgId, userId } = await auth()
@@ -70,6 +72,18 @@ export async function POST(request: Request) {
     lineItems,
     redirectUrl: `${env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/settings/billing`,
   })
+
+  const pool = createPool({
+    connectionString: env.DATABASE_URL,
+    maxUses: 1,
+  })
+
+  await insertOrder.run(
+    {
+      order: { id: order.id, status: order.state, workspaceId: orgId },
+    },
+    pool
+  )
 
   log.info('Order was created', {
     orderId: order.id,

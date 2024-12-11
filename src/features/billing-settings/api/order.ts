@@ -16,12 +16,20 @@ export const CreateOrderFormSchema = z.object({
 export type CreateOrderFormValues = z.infer<typeof CreateOrderFormSchema>
 
 export const createOrder = async (values: CreateOrderFormValues) => {
-  await fetch('/api/order', {
-    method: 'PATCH',
+  const response = await fetch('/api/order', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
     body: JSON.stringify(values),
   })
 
-  return Promise.resolve({})
+  if (!response.ok) {
+    throw new Error('Failed to create order')
+  }
+
+  return response.json()
 }
 
 type UseCreateOrderOptions = {

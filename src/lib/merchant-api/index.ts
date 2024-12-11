@@ -36,6 +36,14 @@ export type CreateOrderParams = {
   redirectUrl: string
 }
 
+export type CreateOrderResponse = {
+  id: string
+  token: string
+  type: 'payment'
+  state: 'pending'
+  checkoutUrl: string
+}
+
 export class MerchantAPI {
   protected readonly config: ConfigValues
 
@@ -68,13 +76,7 @@ export class MerchantAPI {
     }
   }
 
-  async createOrder(values: CreateOrderParams): Promise<{
-    id: string
-    token: string
-    type: 'payment'
-    state: 'pending'
-    checkoutUrl: string
-  }> {
+  async createOrder(values: CreateOrderParams): Promise<CreateOrderResponse> {
     const order = await this.request('POST', 'orders', {
       amount: values.amount,
       currency: values.currency,

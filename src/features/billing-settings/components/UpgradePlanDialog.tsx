@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { useCreateOrder } from '../api'
 import { useState } from 'react'
 import { Kbd } from '@/components/ui/kbd'
+import type { CreateOrderResponse } from '@/lib/merchant-api'
 
 interface Props {
   billingPeriod: BillingPeriod
@@ -29,7 +30,11 @@ export const UpgradePlanDialog = (props: Props) => {
 
   const createOrder = useCreateOrder({
     mutationConfig: {
-      onSuccess: () => {
+      onSuccess: (order: CreateOrderResponse) => {
+        if (order.checkoutUrl) {
+          window.location.href = order.checkoutUrl
+        }
+
         setOpen(false)
       },
     },

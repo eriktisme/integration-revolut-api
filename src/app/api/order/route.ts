@@ -3,8 +3,9 @@ import { NextResponse } from 'next/server'
 import { MerchantAPI } from '@/lib/merchant-api'
 import { env } from '@/env'
 import type { CreateOrderFormValues } from '@/features/billing-settings'
+import { log } from '@/lib/observability'
 
-export async function PATCH(request: Request) {
+export async function POST(request: Request) {
   const { orgId, userId } = await auth()
 
   if (!orgId || !userId) {
@@ -61,12 +62,19 @@ export async function PATCH(request: Request) {
   })
 
   const order = await merchantApi.createOrder({
-    amount: 0,
+    amount:
+      lineItems.reduce((acc, lineItem) => acc + lineItem.totalAmount, 0) * 100,
     captureMode: 'automatic',
     currency: 'GBP',
     customer: { id: revolutCustomerId },
     lineItems,
     redirectUrl: `${env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/settings/billing`,
+  })
+
+  log.info('Order was created', {
+    orderId: order.id,
+    customerId: revolutCustomerId,
+    orgId,
   })
 
   return NextResponse.json(order)

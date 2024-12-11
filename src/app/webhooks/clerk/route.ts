@@ -23,7 +23,7 @@ const handleOrganizationCreated = async (data: OrganizationJSON) => {
   })
 
   const merchantApi = new MerchantAPI({
-    apiKey: env.REVOLUT_MERCHANT_API_KEY,
+    apiKey: env.REVOLUT_API_KEY,
     version: '1.0',
     environment: 'sandbox',
   })

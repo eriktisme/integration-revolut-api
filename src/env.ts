@@ -13,10 +13,7 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().min(1).startsWith('/'),
     NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().min(1).startsWith('/'),
 
-    NEXT_PUBLIC_REVOLUT_MERCHANT_API_PUBLIC_KEY: z
-      .string()
-      .min(1)
-      .startsWith('pk_'),
+    NEXT_PUBLIC_REVOLUT_API_PUBLIC_KEY: z.string().min(1).startsWith('pk_'),
 
     // Added by Vercel
     NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL: z.string(),
@@ -39,12 +36,13 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
     NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
-    NEXT_PUBLIC_REVOLUT_MERCHANT_API_PUBLIC_KEY:
-      process.env.NEXT_PUBLIC_REVOLUT_MERCHANT_API_PUBLIC_KEY,
+    NEXT_PUBLIC_REVOLUT_API_PUBLIC_KEY:
+      process.env.NEXT_PUBLIC_REVOLUT_API_PUBLIC_KEY,
     NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL:
       process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL,
     NEXT_RUNTIME: process.env.NEXT_RUNTIME,
-    REVOLUT_MERCHANT_API_KEY: process.env.REVOLUT_MERCHANT_API_KEY,
+    REVOLUT_API_KEY: process.env.REVOLUT_API_KEY,
+    REVOLUT_WEBHOOK_SIGNING_SECRET: process.env.REVOLUT_WEBHOOK_SIGNING_SECRET,
     VERCEL: process.env.VERCEL,
   },
   /*
@@ -58,7 +56,8 @@ export const env = createEnv({
     CLERK_WEBHOOK_SECRET: z.string().min(1).startsWith('whsec_'),
 
     // Revolut
-    REVOLUT_MERCHANT_API_KEY: z.string().min(1).startsWith('sk_'),
+    REVOLUT_API_KEY: z.string().min(1).startsWith('sk_'),
+    REVOLUT_WEBHOOK_SIGNING_SECRET: z.string().min(1).startsWith('wsk'),
 
     // Neon
     DATABASE_URL: z.string().min(1),

@@ -2,7 +2,8 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "globalPassThroughEnv": [
-    "REVOLUT_MERCHANT_API_KEY",
+    "REVOLUT_API_KEY",
+    "REVOLUT_WEBHOOK_SIGNING_SECRET",
     "DATABASE_URL",
     "DATABASE_URL_UNPOOLED",
     "CLERK_SECRET_KEY",
@@ -13,7 +14,7 @@
       "dependsOn": ["^build", "test"],
       "outputs": [".next/**", "!.next/cache/**"],
       "env": [
-        "REVOLUT_MERCHANT_API_KEY",
+        "REVOLUT_API_KEY",
         "DATABASE_URL",
         "DATABASE_URL_UNPOOLED",
         "CLERK_SECRET_KEY",

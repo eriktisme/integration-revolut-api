@@ -54,3 +54,48 @@ export const insertWorkspace = new PreparedQuery<
   IInsertWorkspaceParams,
   IInsertWorkspaceResult
 >(insertWorkspaceIR)
+
+/** 'GetWorkspaceById' parameters type */
+export interface IGetWorkspaceByIdParams {
+  id?: string | null | void
+}
+
+/** 'GetWorkspaceById' return type */
+export interface IGetWorkspaceByIdResult {
+  created_at: Date | null
+  id: string
+  revolut_customer_id: string
+}
+
+/** 'GetWorkspaceById' query type */
+export interface IGetWorkspaceByIdQuery {
+  params: IGetWorkspaceByIdParams
+  result: IGetWorkspaceByIdResult
+}
+
+const getWorkspaceByIdIR: any = {
+  usedParamSet: { id: true },
+  params: [
+    {
+      name: 'id',
+      required: false,
+      transform: { type: 'scalar' },
+      locs: [{ a: 37, b: 39 }],
+    },
+  ],
+  statement: 'SELECT\n *\nFROM workspaces\nWHERE id = :id',
+}
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT
+ *  *
+ * FROM workspaces
+ * WHERE id = :id
+ * ```
+ */
+export const getWorkspaceById = new PreparedQuery<
+  IGetWorkspaceByIdParams,
+  IGetWorkspaceByIdResult
+>(getWorkspaceByIdIR)

@@ -1,7 +1,7 @@
 import { log } from '@/lib/observability'
 import { headers } from 'next/headers'
 import { Webhook } from 'svix'
-import { OrganizationJSON, WebhookEvent } from '@clerk/backend'
+import type { OrganizationJSON, WebhookEvent } from '@clerk/backend'
 import { env } from '@/env'
 import { MerchantAPI } from '@/lib/merchant-api'
 import { clerkClient } from '@clerk/nextjs/server'
@@ -13,7 +13,9 @@ const handleOrganizationCreated = async (data: OrganizationJSON) => {
     return new Response('Error occurred', { status: 400 })
   }
 
-  const user = await (await clerkClient()).users.getUser(data.created_by)
+  const client = await clerkClient()
+
+  const user = await client.users.getUser(data.created_by)
 
   const pool = createPool({
     connectionString: env.DATABASE_URL,
@@ -21,7 +23,7 @@ const handleOrganizationCreated = async (data: OrganizationJSON) => {
   })
 
   const merchantApi = new MerchantAPI({
-    apiKey: env.REVOLUT_MERCHANT_API_KEY,
+    apiKey: env.REVOLUT_API_KEY,
     version: '1.0',
     environment: 'sandbox',
   })
@@ -30,6 +32,12 @@ const handleOrganizationCreated = async (data: OrganizationJSON) => {
     email: user.emailAddresses.at(0)?.emailAddress as string,
     fullName: user.fullName as string,
     businessName: data.name,
+  })
+
+  await client.organizations.updateOrganization(data.id, {
+    publicMetadata: {
+      revolutCustomerId: customer.id,
+    },
   })
 
   await insertWorkspace.run(
@@ -52,12 +60,11 @@ export const POST = async (request: Request): Promise<Response> => {
   const svixSignature = headerPayload.get('svix-signature')
 
   if (!svixId || !svixTimestamp || !svixSignature) {
-    return new Response('Error occured -- no svix headers', {
+    return new Response('Error occurred -- no svix headers', {
       status: 400,
     })
   }
 
-  // Get the body
   const payload = (await request.json()) as object
   const body = JSON.stringify(payload)
 

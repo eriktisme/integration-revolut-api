@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 const SignUp = dynamic(() => import('@clerk/nextjs').then((mod) => mod.SignUp))
 
 export const metadata: Metadata = {

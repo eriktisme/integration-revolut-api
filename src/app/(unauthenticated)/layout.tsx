@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { redirect } from 'next/navigation'
 import { currentUser } from '@clerk/nextjs/server'
 

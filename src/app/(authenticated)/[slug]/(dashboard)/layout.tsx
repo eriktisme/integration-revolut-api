@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/app-sidebar'
 import { MainHeader } from '@/components/main-header'

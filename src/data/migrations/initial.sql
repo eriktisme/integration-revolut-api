@@ -3,3 +3,10 @@ CREATE TABLE workspaces (
   revolut_customer_id VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+CREATE TABLE orders (
+  workspace_id VARCHAR NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+  id VARCHAR PRIMARY KEY,
+  status VARCHAR(255) NOT NULL DEFAULT 'pending',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);

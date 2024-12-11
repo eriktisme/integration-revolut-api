@@ -13,7 +13,9 @@ const handleOrganizationCreated = async (data: OrganizationJSON) => {
     return new Response('Error occurred', { status: 400 })
   }
 
-  const user = await (await clerkClient()).users.getUser(data.created_by)
+  const client = await clerkClient()
+
+  const user = await client.users.getUser(data.created_by)
 
   const pool = createPool({
     connectionString: env.DATABASE_URL,
@@ -30,6 +32,12 @@ const handleOrganizationCreated = async (data: OrganizationJSON) => {
     email: user.emailAddresses.at(0)?.emailAddress as string,
     fullName: user.fullName as string,
     businessName: data.name,
+  })
+
+  await client.organizations.updateOrganization(data.id, {
+    publicMetadata: {
+      revolutCustomerId: customer.id,
+    },
   })
 
   await insertWorkspace.run(

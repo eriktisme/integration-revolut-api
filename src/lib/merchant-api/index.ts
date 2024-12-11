@@ -12,6 +12,30 @@ const ConfigSchema = z.object({
 
 type ConfigValues = z.infer<typeof ConfigSchema>
 
+export type CreateOrderParams = {
+  amount: number
+  currency: 'GBP'
+  customer: {
+    id: string
+  }
+  lineItems: Array<{
+    name: string
+    type: string
+    quantity: {
+      value: number
+      unit: string
+    }
+    unitPriceAmount: number
+    totalAmount: number
+    taxes: Array<{
+      name: string
+      amount: number
+    }>
+  }>
+  captureMode: 'automatic'
+  redirectUrl: string
+}
+
 export class MerchantAPI {
   protected readonly config: ConfigValues
 
@@ -44,23 +68,59 @@ export class MerchantAPI {
     }
   }
 
+  async createOrder(values: CreateOrderParams): Promise<{
+    id: string
+    token: string
+    type: 'payment'
+    state: 'pending'
+    checkoutUrl: string
+  }> {
+    const order = await this.request('POST', 'orders', {
+      amount: values.amount,
+      currency: values.currency,
+      customer: {
+        id: values.customer.id,
+      },
+      line_items: values.lineItems.map((lineItem) => ({
+        name: lineItem.name,
+        type: lineItem.type,
+        quantity: lineItem.quantity,
+        unit_price_amount: lineItem.unitPriceAmount,
+        total_amount: lineItem.totalAmount,
+        taxes: lineItem.taxes.map((tax) => ({
+          name: tax.name,
+          amount: tax.amount,
+        })),
+      })),
+    })
+
+    return {
+      id: order.id,
+      token: order.token,
+      type: order.type as 'payment',
+      state: order.state as 'pending',
+      checkoutUrl: order.checkout_url,
+    }
+  }
+
   protected async request(
     method: string,
     path: string,
-    body: Record<string, string>
+    body: Record<string, any>
   ): Promise<Record<string, string>> {
     const response = await fetch(
       `${this.endpoint}${this.config.version}/${path}`,
       {
-        method,
+        body: !['GET', 'DELETE'].includes(method)
+          ? JSON.stringify(body)
+          : undefined,
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${this.config.apiKey}`,
           'Content-Type': 'application/json',
+          'Revolut-Api-Version': '2024-09-01',
         },
-        body: !['GET', 'DELETE'].includes(method)
-          ? JSON.stringify(body)
-          : undefined,
+        method,
       }
     )
 

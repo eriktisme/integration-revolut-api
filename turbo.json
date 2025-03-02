@@ -1,14 +1,24 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
+  "globalPassThroughEnv": [
+    "REVOLUT_API_KEY",
+    "REVOLUT_WEBHOOK_SIGNING_SECRET",
+    "DATABASE_URL",
+    "DATABASE_URL_UNPOOLED",
+    "CLERK_SECRET_KEY",
+    "CLERK_WEBHOOK_SECRET"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build", "test"],
       "outputs": [".next/**", "!.next/cache/**"],
       "env": [
+        "REVOLUT_API_KEY",
+        "DATABASE_URL",
+        "DATABASE_URL_UNPOOLED",
         "CLERK_SECRET_KEY",
-        "CLERK_WEBHOOK_SECRET",
-        "SVIX_TOKEN"
+        "CLERK_WEBHOOK_SECRET"
       ]
     },
     "test": {

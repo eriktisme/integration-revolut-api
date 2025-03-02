@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { auth } from '@clerk/nextjs/server'
 import { notFound } from 'next/navigation'
@@ -22,7 +22,9 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen>
       <SettingsSidebar />
-      <main className="flex min-h-svh flex-1 flex-col">{children}</main>
+      <main className="flex min-h-svh flex-1 flex-col px-4 py-5">
+        {children}
+      </main>
     </SidebarProvider>
   )
 }
